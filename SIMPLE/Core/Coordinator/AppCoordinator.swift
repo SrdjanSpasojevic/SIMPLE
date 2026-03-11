@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Combine
+import SwiftData
 
 let nav = "[NAVIGATION] "
 
@@ -16,8 +17,13 @@ final class AppCoordinator: Navigationable {
 
     // MARK: Services
     var authService: AuthService
-    var transactionService: TransactionService
-    
+    var databaseService: DatabaseService
+
+    init(container: ModelContainer) {
+        self.databaseService = Database(container: container)
+        self.authService = AuthenticationRepository(database: self.databaseService)
+    }
+
     func navigate(to route: Route) {
         print(nav, "Navigating to: \(route)")
         navigationPath.append(route)

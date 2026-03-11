@@ -13,11 +13,11 @@ final class Account: Identifiable {
     var id: String
     var balance: Double
     var ownerId: String
-    var transactions: [Transaction]
+    var transactions: [BankTransaction]
     
     init(balance: Double,
          ownerId: String,
-         transactions: [Transaction]) {
+         transactions: [BankTransaction]) {
         self.id = UUID().uuidString
         self.balance = balance
         self.ownerId = ownerId
