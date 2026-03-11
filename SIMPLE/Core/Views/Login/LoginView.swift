@@ -36,9 +36,6 @@ struct LoginView: View {
                     Spacer(minLength: 60)
 
                     VStack(spacing: 8) {
-                        Text("Welcome back")
-                            .font(.system(size: 32, weight: .bold, design: .rounded))
-                            .foregroundStyle(AppColors.loginPrimaryText)
                         Text("Sign in to continue")
                             .font(.subheadline)
                             .foregroundStyle(AppColors.loginSecondaryText)
@@ -101,6 +98,8 @@ struct LoginView: View {
             }
             }
         }
+        .navigationTitle("Welcome back")
+        .navigationBarTitleDisplayMode(.large)
         .alert("Login failed", isPresented: $viewModel.showAlert) {
             Button("OK", role: .cancel) { }
         } message: {
