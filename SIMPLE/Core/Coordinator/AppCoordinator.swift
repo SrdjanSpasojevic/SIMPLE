@@ -14,14 +14,21 @@ let nav = "[NAVIGATION] "
 @MainActor
 final class AppCoordinator: Navigationable {
     @Published var navigationPath = NavigationPath()
+    @Published var currentUser: User?
 
     // MARK: Services
-    var authService: AuthService
+    var authService: AuthenticationService
     var databaseService: DatabaseService
 
     init(container: ModelContainer) {
         self.databaseService = Database(container: container)
         self.authService = AuthenticationRepository(database: self.databaseService)
+    }
+
+    func bootstrap() async {
+        if let user = await authService.currentUser() {
+            self.currentUser = user
+        }
     }
 
     func navigate(to route: Route) {

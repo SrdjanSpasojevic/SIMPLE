@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class AuthenticationRepository: AuthService {
+final class AuthenticationRepository: AuthenticationService {
     private var database: DatabaseService
     
     init(database: DatabaseService) {
@@ -20,7 +20,7 @@ final class AuthenticationRepository: AuthService {
         })
         
         if user.isEmpty {
-            throw AuthError.invalidCredentials
+            throw AuthenticationError.invalidCredentials
         }
         
         return true
@@ -30,7 +30,7 @@ final class AuthenticationRepository: AuthService {
         do {
             try await database.save(user)
         } catch {
-            throw AuthError.registrationError
+            throw AuthenticationError.registrationError
         }
     }
     
@@ -38,9 +38,20 @@ final class AuthenticationRepository: AuthService {
         guard let fetchedUser = try await database.get(where: #Predicate<User> {
             $0.id == userId
         }).first else {
-            throw AuthError.logoutError
+            throw AuthenticationError.logoutError
         }
         fetchedUser.isLoggedIn = false
         try await database.save(fetchedUser)
+    }
+
+    func currentUser() async -> User? {
+        do {
+            let users = try await database.get(where: #Predicate<User> {
+                $0.isLoggedIn == true
+            })
+            return users.first
+        } catch {
+            return nil
+        }
     }
 }

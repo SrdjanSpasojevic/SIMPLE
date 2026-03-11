@@ -19,7 +19,13 @@ struct RootView: View {
 
     var body: some View {
         NavigationStack(path: $coordinator.navigationPath) {
-            LoginView(coordinator: coordinator)
+            Group {
+                if coordinator.currentUser != nil {
+                    HomeView(coordinator: coordinator)
+                } else {
+                    LoginView(coordinator: coordinator)
+                }
+            }
                 .navigationDestination(for: Route.self) { route in
                     switch route {
                     case .login:
@@ -27,11 +33,14 @@ struct RootView: View {
                     case .register:
                         RegisterView(coordinator: coordinator)
                     case .home:
-                        #warning("HOME VC")
+                        HomeView(coordinator: coordinator)
                     case .transfer:
                         #warning("TRANSFER VC")
                     }
                 }
+        }
+        .task {
+            await coordinator.bootstrap()
         }
     }
 }

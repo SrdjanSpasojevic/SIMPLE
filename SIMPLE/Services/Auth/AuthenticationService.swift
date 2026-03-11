@@ -7,8 +7,9 @@
 
 import Foundation
 
-protocol AuthService {
+protocol AuthenticationService {
     func login(username: String, password: String) async throws -> Bool
     func register(user: User) async throws
     func logout(userId: String) async throws
+    func currentUser() async -> User?
 }
