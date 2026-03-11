@@ -41,4 +41,25 @@ actor Database: DatabaseService {
         context.delete(model)
         try context.save()
     }
+
+    func performTransaction(_ operations: (TransactionDatabase) throws -> Void) async throws {
+        try context.transaction {
+            let transactionContext = TransactionContext(context: context)
+            try operations(transactionContext)
+        }
+    }
+}
+
+private struct TransactionContext: TransactionDatabase {
+    let context: ModelContext
+
+    func save<T: PersistentModel>(_ model: T) throws {
+        context.insert(model)
+        try context.save()
+    }
+
+    func remove<T: PersistentModel>(_ model: T) throws {
+        context.delete(model)
+        try context.save()
+    }
 }

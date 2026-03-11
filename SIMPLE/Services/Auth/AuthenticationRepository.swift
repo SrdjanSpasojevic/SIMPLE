@@ -28,7 +28,6 @@ final class AuthenticationRepository: AuthService {
     
     func register(user: User) async throws {
         do {
-            user.isLoggedIn = true
             try await database.save(user)
         } catch {
             throw AuthError.registrationError
@@ -44,6 +43,4 @@ final class AuthenticationRepository: AuthService {
         fetchedUser.isLoggedIn = false
         try await database.save(fetchedUser)
     }
-
-    
 }

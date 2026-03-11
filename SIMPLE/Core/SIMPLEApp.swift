@@ -28,6 +28,7 @@ struct SIMPLEApp: App {
     var body: some Scene {
         WindowGroup {
             RootView(container: sharedModelContainer)
+                .preferredColorScheme(.dark)
         }
         .modelContainer(sharedModelContainer)
     }

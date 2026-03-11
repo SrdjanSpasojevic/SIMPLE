@@ -8,7 +8,7 @@
 import Foundation
 
 protocol BankTransactionService: Sendable {
-    func send(fromAccountId: String, toAccountId: String, ammount: Double) async throws -> Result<Bool, Error>
+    func send(fromAccountId: String, toAccountId: String, amount: Double) async -> Result<Bool, Error>
     func checkBalance(for accountId: String) throws -> Result<Double, Error>
     func accountExists(withId accountId: String) -> Bool
 }

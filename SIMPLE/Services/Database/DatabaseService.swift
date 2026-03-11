@@ -8,8 +8,14 @@
 import Foundation
 import SwiftData
 
+protocol TransactionDatabase {
+    func save<T: PersistentModel>(_ model: T) throws
+    func remove<T: PersistentModel>(_ model: T) throws
+}
+
 protocol DatabaseService: Sendable {
     func get<T: PersistentModel>(where predicate: Predicate<T>?) async throws -> [T]
     func save<T: PersistentModel>(_ model: T) async throws
     func remove<T: PersistentModel>(_ model: T) async throws
+    func performTransaction(_ operations: (TransactionDatabase) throws -> Void) async throws
 }

@@ -14,20 +14,17 @@ final class BankTransaction: Identifiable {
     var fromAccountId: String
     var toAccountId: String
     var amount: Double
-    var timestampStart: Date
-    var timestampEnd: Date
+    var timestamp: Date
     
     init(fromAccountId: String,
          toAccountId: String,
          amount: Double,
-         timestampStart: Date,
-         timestampEnd: Date) {
+         timestamp: Date) {
         id = UUID().uuidString
         
         self.fromAccountId = fromAccountId
         self.toAccountId = toAccountId
         self.amount = amount
-        self.timestampStart = timestampStart
-        self.timestampEnd = timestampEnd
+        self.timestamp = timestamp
     }
 }

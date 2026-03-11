@@ -18,17 +18,18 @@ final class User: Identifiable, Sendable {
     var account: Account
     var isLoggedIn: Bool
     
-    init(firstName: String,
+    init(id: String,
+         firstName: String,
          lastName: String,
          username: String,
          password: String,
          account: Account) {
-        self.id = UUID().uuidString
+        self.id = id
         self.firstName = firstName
         self.lastName = lastName
         self.username = username
         self.password = password
         self.account = account
-        self.isLoggedIn = false
+        self.isLoggedIn = true
     }
 }

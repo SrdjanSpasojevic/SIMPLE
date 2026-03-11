@@ -18,6 +18,20 @@ struct RootView: View {
     }
 
     var body: some View {
-        LoginView(coordinator: coordinator)
+        NavigationStack(path: $coordinator.navigationPath) {
+            LoginView(coordinator: coordinator)
+                .navigationDestination(for: Route.self) { route in
+                    switch route {
+                    case .login:
+                        LoginView(coordinator: coordinator)
+                    case .register:
+                        RegisterView(coordinator: coordinator)
+                    case .home:
+                        #warning("HOME VC")
+                    case .transfer:
+                        #warning("TRANSFER VC")
+                    }
+                }
+        }
     }
 }

@@ -7,17 +7,21 @@
 
 import SwiftUI
 
+var loginViewText = "[LOGIN VIEW] "
+
 struct LoginView: View {
     @ObservedObject var coordinator: AppCoordinator
     @State private var username = ""
     @State private var password = ""
+    @State private var showAlert = false
+    @State private var alertMessage = ""
 
     var body: some View {
         ZStack {
             LinearGradient(
                 colors: [
-                    Color(red: 0.35, green: 0.18, blue: 0.55),  // rich violet
-                    Color(red: 0.08, green: 0.22, blue: 0.42)   // deep teal-blue
+                    AppColors.loginBackgroundTop,
+                    AppColors.loginBackgroundBottom
                 ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
@@ -31,10 +35,10 @@ struct LoginView: View {
                     VStack(spacing: 8) {
                         Text("Welcome back")
                             .font(.system(size: 32, weight: .bold, design: .rounded))
-                            .foregroundStyle(.white)
+                            .foregroundStyle(AppColors.loginPrimaryText)
                         Text("Sign in to continue")
                             .font(.subheadline)
-                            .foregroundStyle(.white.opacity(0.7))
+                            .foregroundStyle(AppColors.loginSecondaryText)
                     }
                     .padding(.bottom, 8)
 
@@ -54,12 +58,24 @@ struct LoginView: View {
                             .padding(.vertical, 16)
                             .glassEffect(.regular, in: .rect(cornerRadius: 14))
 
-                        Button(action: {}) {
+                        Button(action: {
+                            Task {
+                                do {
+                                    let loggedIn = try await coordinator.authService.login(username: username, password: password)
+                                    print(loginViewText, "User is logged in: \(loggedIn)")
+                                } catch {
+                                    await MainActor.run {
+                                        alertMessage = error.localizedDescription
+                                        showAlert = true
+                                    }
+                                }
+                            }
+                        }) {
                             Text("Sign in")
                                 .font(.headline)
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 16)
-                                .foregroundStyle(username.isEmpty || password.isEmpty ? .gray : .white)
+                                .foregroundStyle(username.isEmpty || password.isEmpty ? AppColors.loginDisabledText : AppColors.loginPrimaryText)
                         }
                         .disabled(username.isEmpty || password.isEmpty)
                         .glassEffect(
@@ -72,10 +88,12 @@ struct LoginView: View {
                     .padding(24)
                     .glassEffect(.regular, in: .rect(cornerRadius: 14))
 
-                    Button(action: { coordinator.navigate(to: .register) }) {
+                    Button(action: {
+                        coordinator.navigate(to: .register)
+                    }) {
                         Text("Don't have an account? **Sign up**")
                             .font(.subheadline)
-                            .foregroundStyle(.white.opacity(0.9))
+                            .foregroundStyle(AppColors.loginPrimaryText.opacity(0.9))
                     }
                     .padding(.top, 8)
 
@@ -83,6 +101,11 @@ struct LoginView: View {
                 }
                 .padding(.horizontal, 24)
             }
+        }
+        .alert("Login failed", isPresented: $showAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(alertMessage.isEmpty ? "Something went wrong. Please try again." : alertMessage)
         }
     }
 }
