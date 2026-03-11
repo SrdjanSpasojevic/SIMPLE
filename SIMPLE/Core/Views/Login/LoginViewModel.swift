@@ -36,7 +36,6 @@ final class LoginViewModel: ObservableObject {
                 coordinator.currentUser = user
                 coordinator.navigateToRoot()
             }
-            print(loginViewText, "User is logged in: true")
         } catch {
             alertMessage = error.localizedDescription
             showAlert = true

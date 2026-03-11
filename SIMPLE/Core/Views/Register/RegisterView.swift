@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-var registerViewText = "[REGISTER VIEW] "
+private var registerViewText = "[REGISTER VIEW] "
 
 struct RegisterView: View {
     @ObservedObject var coordinator: AppCoordinator
@@ -30,6 +30,7 @@ struct RegisterView: View {
             )
             .ignoresSafeArea()
 
+            ScrollViewReader { proxy in
             ScrollView {
                 VStack(spacing: 28) {
                     Spacer(minLength: 60)
@@ -42,56 +43,58 @@ struct RegisterView: View {
                             .font(.subheadline)
                             .foregroundStyle(AppColors.loginSecondaryText)
                     }
-                    .padding(.bottom, 8)
+                    .id("registerTop")
+                    .padding(.bottom, AppLayout.paddingSection)
 
                     VStack(spacing: 20) {
                         TextField("First name", text: $viewModel.firstName)
                             .textFieldStyle(.plain)
                             .textContentType(.givenName)
                             .autocapitalization(.words)
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 16)
+                            .padding(.horizontal, AppLayout.paddingContent)
+                            .padding(.vertical, AppLayout.paddingVertical)
                             .glassEffect(.regular, in: .rect(cornerRadius: AppLayout.cornerRadiusControl))
 
                         TextField("Last name", text: $viewModel.lastName)
                             .textFieldStyle(.plain)
                             .textContentType(.familyName)
                             .autocapitalization(.words)
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 16)
+                            .padding(.horizontal, AppLayout.paddingContent)
+                            .padding(.vertical, AppLayout.paddingVertical)
                             .glassEffect(.regular, in: .rect(cornerRadius: AppLayout.cornerRadiusControl))
 
                         TextField("Username", text: $viewModel.username)
                             .textFieldStyle(.plain)
                             .textContentType(.username)
                             .autocapitalization(.none)
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 16)
+                            .padding(.horizontal, AppLayout.paddingContent)
+                            .padding(.vertical, AppLayout.paddingVertical)
                             .glassEffect(.regular, in: .rect(cornerRadius: AppLayout.cornerRadiusControl))
 
                         SecureField("Password", text: $viewModel.password)
                             .textFieldStyle(.plain)
                             .textContentType(.newPassword)
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 16)
+                            .padding(.horizontal, AppLayout.paddingContent)
+                            .padding(.vertical, AppLayout.paddingVertical)
                             .glassEffect(.regular, in: .rect(cornerRadius: AppLayout.cornerRadiusControl))
 
                         SecureField("Confirm password", text: $viewModel.confirmPassword)
                             .textFieldStyle(.plain)
                             .textContentType(.newPassword)
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 16)
+                            .padding(.horizontal, AppLayout.paddingContent)
+                            .padding(.vertical, AppLayout.paddingVertical)
                             .glassEffect(.regular, in: .rect(cornerRadius: AppLayout.cornerRadiusControl))
 
                         Button(action: {
                             Task {
                                 await viewModel.register()
+                                print(registerViewText, "Registration success for username: \(viewModel.username)")
                             }
                         }) {
                             Text("Sign up")
                                 .font(.headline)
                                 .frame(maxWidth: .infinity)
-                                .padding(.vertical, 16)
+                                .padding(.vertical, AppLayout.paddingVertical)
                                 .foregroundStyle(
                                     viewModel.isFormValid
                                         ? AppColors.loginPrimaryText
@@ -106,7 +109,7 @@ struct RegisterView: View {
                             in: .rect(cornerRadius: AppLayout.cornerRadiusControl)
                         )
                     }
-                    .padding(24)
+                    .padding(AppLayout.paddingScreen)
                     .glassEffect(.regular.tint(.clear), in: .rect(cornerRadius: AppLayout.cornerRadiusControl))
 
                     Button(action: viewModel.navigateBack) {
@@ -114,11 +117,15 @@ struct RegisterView: View {
                             .font(.subheadline)
                             .foregroundStyle(AppColors.loginPrimaryText.opacity(0.9))
                     }
-                    .padding(.top, 8)
+                    .padding(.top, AppLayout.paddingSection)
 
                     Spacer(minLength: 80)
                 }
-                .padding(.horizontal, 24)
+                .padding(.horizontal, AppLayout.paddingScreen)
+            }
+            .onAppear {
+                proxy.scrollTo("registerTop", anchor: .top)
+            }
             }
         }
         .alert("Registration failed", isPresented: $viewModel.showAlert) {

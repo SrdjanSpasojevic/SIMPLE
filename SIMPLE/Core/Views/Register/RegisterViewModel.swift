@@ -47,7 +47,6 @@ final class RegisterViewModel: ObservableObject {
             try await coordinator.authService.register(user: user)
             await coordinator.bootstrap()
             coordinator.navigateToRoot()
-            print(registerViewText, "Registration success for username: \(username)")
         } catch {
             alertMessage = error.localizedDescription
             showAlert = true

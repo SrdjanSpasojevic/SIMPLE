@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-var loginViewText = "[LOGIN VIEW] "
+private var loginViewText = "[LOGIN VIEW] "
 
 struct LoginView: View {
     @ObservedObject var coordinator: AppCoordinator
@@ -30,6 +30,7 @@ struct LoginView: View {
             )
             .ignoresSafeArea()
 
+            ScrollViewReader { proxy in
             ScrollView {
                 VStack(spacing: 28) {
                     Spacer(minLength: 60)
@@ -42,33 +43,35 @@ struct LoginView: View {
                             .font(.subheadline)
                             .foregroundStyle(AppColors.loginSecondaryText)
                     }
-                    .padding(.bottom, 8)
+                    .id("loginTop")
+                    .padding(.bottom, AppLayout.paddingSection)
 
                     VStack(spacing: 20) {
                         TextField("Username", text: $viewModel.username)
                             .textFieldStyle(.plain)
                             .textContentType(.username)
                             .autocapitalization(.none)
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 16)
+                            .padding(.horizontal, AppLayout.paddingContent)
+                            .padding(.vertical, AppLayout.paddingVertical)
                             .glassEffect(.regular, in: .rect(cornerRadius: AppLayout.cornerRadiusControl))
 
                         SecureField("Password", text: $viewModel.password)
                             .textFieldStyle(.plain)
                             .textContentType(.password)
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 16)
+                            .padding(.horizontal, AppLayout.paddingContent)
+                            .padding(.vertical, AppLayout.paddingVertical)
                             .glassEffect(.regular, in: .rect(cornerRadius: AppLayout.cornerRadiusControl))
 
                         Button(action: {
                             Task {
                                 await viewModel.login()
+                                print(loginViewText, "User is logged in: true")
                             }
                         }) {
                             Text("Sign in")
                                 .font(.headline)
                                 .frame(maxWidth: .infinity)
-                                .padding(.vertical, 16)
+                                .padding(.vertical, AppLayout.paddingVertical)
                                 .foregroundStyle(viewModel.canSubmit ? AppColors.loginPrimaryText : AppColors.loginDisabledText)
                         }
                         .disabled(!viewModel.canSubmit)
@@ -79,7 +82,7 @@ struct LoginView: View {
                             in: .rect(cornerRadius: AppLayout.cornerRadiusControl)
                         )
                     }
-                    .padding(24)
+                    .padding(AppLayout.paddingScreen)
                     .glassEffect(.regular.tint(.clear), in: .rect(cornerRadius: AppLayout.cornerRadiusControl))
 
                     Button(action: viewModel.navigateToRegister) {
@@ -87,11 +90,15 @@ struct LoginView: View {
                             .font(.subheadline)
                             .foregroundStyle(AppColors.loginPrimaryText.opacity(0.9))
                     }
-                    .padding(.top, 8)
+                    .padding(.top, AppLayout.paddingSection)
 
                     Spacer(minLength: 80)
                 }
-                .padding(.horizontal, 24)
+                .padding(.horizontal, AppLayout.paddingScreen)
+            }
+            .onAppear {
+                proxy.scrollTo("loginTop", anchor: .top)
+            }
             }
         }
         .alert("Login failed", isPresented: $viewModel.showAlert) {

@@ -21,5 +21,11 @@ enum AppLayout {
     static let cornerRadiusCard: CGFloat = 24
     static let cornerRadiusRow: CGFloat = 18
     static let cornerRadiusControl: CGFloat = 14
+
+    static let paddingScreen: CGFloat = 24
+    static let paddingContent: CGFloat = 20
+    static let paddingVertical: CGFloat = 16
+    static let paddingCard: CGFloat = 14
+    static let paddingSection: CGFloat = 8
 }
 

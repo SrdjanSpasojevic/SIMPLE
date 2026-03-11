@@ -5,6 +5,7 @@
 //  Created by Srdjan Spasojevic on 11. 3. 2026..
 //
 
+private var homeViewText = "[HOME VIEW] "
 
 import SwiftUI
 
@@ -34,8 +35,8 @@ struct HomeView: View {
                     balanceSection
                     transactionsSection
                 }
-                .padding(.horizontal, 20)
-                .padding(.vertical, 16)
+                .padding(.horizontal, AppLayout.paddingContent)
+                .padding(.vertical, AppLayout.paddingVertical)
             }
         }
         .navigationTitle(viewModel.greeting.isEmpty ? "Hi" : viewModel.greeting)
@@ -43,8 +44,10 @@ struct HomeView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button("Sign Out") {
-                    // Sign out action will be wired later
-                    print("Sign Out tapped")
+                    Task {
+                        await viewModel.logout()
+                    }
+                    print(homeViewText, "User logged out")
                 }
                 .font(.callout.weight(.semibold))
                 .foregroundStyle(AppColors.loginPrimaryText)
@@ -65,7 +68,7 @@ struct HomeView: View {
                 .font(.system(size: 34, weight: .bold))
                 .foregroundStyle(AppColors.loginPrimaryText)
         }
-        .padding(20)
+        .padding(AppLayout.paddingCard)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: AppLayout.cornerRadiusCard, style: .continuous)
@@ -131,7 +134,7 @@ struct HomeView: View {
                 .font(.subheadline.weight(.semibold))
                 .foregroundColor(row.direction == .incoming ? .green : .red)
         }
-        .padding(14)
+        .padding(AppLayout.paddingCard)
         .background(
             RoundedRectangle(cornerRadius: AppLayout.cornerRadiusRow, style: .continuous)
                 .fill(.ultraThinMaterial)

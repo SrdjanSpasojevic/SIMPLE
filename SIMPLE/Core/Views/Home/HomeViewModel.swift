@@ -29,7 +29,21 @@ final class HomeViewModel: ObservableObject {
         }
     }
 
-    func refresh() async {
+    func logout() async {
+        guard let currentUserId = coordinator.currentUser?.id else {
+            return
+        }
+        
+        do {
+            try await coordinator.authService.logout(userId: currentUserId)
+            coordinator.currentUser = nil
+            coordinator.navigateToRoot()
+        } catch {
+            return
+        }
+    }
+
+    private func refresh() async {
         guard let user = coordinator.currentUser else { return }
 
         greeting = "Hi, \(user.firstName)"
