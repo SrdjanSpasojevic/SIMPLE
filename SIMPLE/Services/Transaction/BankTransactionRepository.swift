@@ -14,12 +14,12 @@ final class BankTransactionRepository: BankTransactionService {
         self.database = database
     }
 
-    func send(fromAccountId: String, toAccountId: String, amount: Double) async -> Result<Bool, Error> {
+    func send(fromUserId: String, toUserId: String, amount: Double) async -> Result<Bool, Error> {
         async let fromUsers = database.get(where: #Predicate<User> {
-            $0.id == fromAccountId
+            $0.id == fromUserId
         })
         async let toUsers = database.get(where: #Predicate<User> {
-            $0.id == toAccountId
+            $0.id == toUserId
         })
 
         do {
@@ -36,8 +36,8 @@ final class BankTransactionRepository: BankTransactionService {
             }
 
             let bankTransaction = BankTransaction(
-                fromAccountId: fromAccountId,
-                toAccountId: toAccountId,
+                fromUserId: fromUserId,
+                toUserId: toUserId,
                 amount: amount,
                 timestamp: Date()
             )
@@ -45,7 +45,9 @@ final class BankTransactionRepository: BankTransactionService {
             do {
                 try await database.performTransaction { transactionDb in
                     from.account.balance -= amount
+                    from.account.transactions?.append(bankTransaction)
                     to.account.balance += amount
+                    to.account.transactions?.append(bankTransaction)
                     try transactionDb.save(from)
                     try transactionDb.save(to)
                     try transactionDb.save(bankTransaction)

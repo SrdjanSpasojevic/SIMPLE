@@ -11,19 +11,19 @@ import SwiftData
 @Model
 final class BankTransaction: Identifiable {
     var id: String
-    var fromAccountId: String
-    var toAccountId: String
+    var fromUserId: String
+    var toUserId: String
     var amount: Double
     var timestamp: Date
     
-    init(fromAccountId: String,
-         toAccountId: String,
+    init(fromUserId: String,
+         toUserId: String,
          amount: Double,
          timestamp: Date) {
         id = UUID().uuidString
         
-        self.fromAccountId = fromAccountId
-        self.toAccountId = toAccountId
+        self.fromUserId = fromUserId
+        self.toUserId = toUserId
         self.amount = amount
         self.timestamp = timestamp
     }

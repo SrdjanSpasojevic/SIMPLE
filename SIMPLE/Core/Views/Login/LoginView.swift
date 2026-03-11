@@ -11,10 +11,12 @@ var loginViewText = "[LOGIN VIEW] "
 
 struct LoginView: View {
     @ObservedObject var coordinator: AppCoordinator
-    @State private var username = ""
-    @State private var password = ""
-    @State private var showAlert = false
-    @State private var alertMessage = ""
+    @StateObject private var viewModel: LoginViewModel
+
+    init(coordinator: AppCoordinator) {
+        self.coordinator = coordinator
+        _viewModel = StateObject(wrappedValue: LoginViewModel(coordinator: coordinator))
+    }
 
     var body: some View {
         ZStack {
@@ -43,54 +45,44 @@ struct LoginView: View {
                     .padding(.bottom, 8)
 
                     VStack(spacing: 20) {
-                        TextField("Username", text: $username)
+                        TextField("Username", text: $viewModel.username)
                             .textFieldStyle(.plain)
                             .textContentType(.username)
                             .autocapitalization(.none)
                             .padding(.horizontal, 20)
                             .padding(.vertical, 16)
-                            .glassEffect(.regular, in: .rect(cornerRadius: 14))
+                            .glassEffect(.regular, in: .rect(cornerRadius: AppLayout.cornerRadiusControl))
 
-                        SecureField("Password", text: $password)
+                        SecureField("Password", text: $viewModel.password)
                             .textFieldStyle(.plain)
                             .textContentType(.password)
                             .padding(.horizontal, 20)
                             .padding(.vertical, 16)
-                            .glassEffect(.regular, in: .rect(cornerRadius: 14))
+                            .glassEffect(.regular, in: .rect(cornerRadius: AppLayout.cornerRadiusControl))
 
                         Button(action: {
                             Task {
-                                do {
-                                    let loggedIn = try await coordinator.authService.login(username: username, password: password)
-                                    print(loginViewText, "User is logged in: \(loggedIn)")
-                                } catch {
-                                    await MainActor.run {
-                                        alertMessage = error.localizedDescription
-                                        showAlert = true
-                                    }
-                                }
+                                await viewModel.login()
                             }
                         }) {
                             Text("Sign in")
                                 .font(.headline)
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 16)
-                                .foregroundStyle(username.isEmpty || password.isEmpty ? AppColors.loginDisabledText : AppColors.loginPrimaryText)
+                                .foregroundStyle(viewModel.canSubmit ? AppColors.loginPrimaryText : AppColors.loginDisabledText)
                         }
-                        .disabled(username.isEmpty || password.isEmpty)
+                        .disabled(!viewModel.canSubmit)
                         .glassEffect(
-                            username.isEmpty || password.isEmpty
-                                ? .identity
-                                : .regular.interactive().tint(.accentColor),
-                            in: .rect(cornerRadius: 14)
+                            viewModel.canSubmit
+                                ? .regular.interactive().tint(.accentColor)
+                                : .identity,
+                            in: .rect(cornerRadius: AppLayout.cornerRadiusControl)
                         )
                     }
                     .padding(24)
-                    .glassEffect(.regular, in: .rect(cornerRadius: 14))
+                    .glassEffect(.regular.tint(.clear), in: .rect(cornerRadius: AppLayout.cornerRadiusControl))
 
-                    Button(action: {
-                        coordinator.navigate(to: .register)
-                    }) {
+                    Button(action: viewModel.navigateToRegister) {
                         Text("Don't have an account? **Sign up**")
                             .font(.subheadline)
                             .foregroundStyle(AppColors.loginPrimaryText.opacity(0.9))
@@ -102,10 +94,10 @@ struct LoginView: View {
                 .padding(.horizontal, 24)
             }
         }
-        .alert("Login failed", isPresented: $showAlert) {
+        .alert("Login failed", isPresented: $viewModel.showAlert) {
             Button("OK", role: .cancel) { }
         } message: {
-            Text(alertMessage.isEmpty ? "Something went wrong. Please try again." : alertMessage)
+            Text(viewModel.alertMessage.isEmpty ? "Something went wrong. Please try again." : viewModel.alertMessage)
         }
     }
 }
