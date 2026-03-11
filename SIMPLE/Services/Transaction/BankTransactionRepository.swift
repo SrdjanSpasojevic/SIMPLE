@@ -59,11 +59,27 @@ final class BankTransactionRepository: BankTransactionService {
         }
     }
     
-    func checkBalance(for accountId: String) throws -> Result<Double, Error> {
-        return .failure(BankTransactionError.incorrectToAccountNumber)
+    func checkBalance(for accountId: String) async -> Result<Double, Error> {
+        do {
+            guard let fetchedAccount = try await database.get(where: #Predicate<Account> {
+                $0.id == accountId
+            }).first else {
+                return .failure(BankTransactionError.somethingWentWrong)
+            }
+            return .success(fetchedAccount.balance)
+        } catch {
+            return .failure(BankTransactionError.somethingWentWrong)
+        }
     }
     
-    func accountExists(withId accountId: String) -> Bool {
-        return false
+    func accountExists(withId accountId: String) async -> Bool {
+        do {
+            let accounts = try await database.get(where: #Predicate<Account> {
+                $0.id == accountId
+            })
+            return !accounts.isEmpty
+        } catch {
+            return false
+        }
     }
 }

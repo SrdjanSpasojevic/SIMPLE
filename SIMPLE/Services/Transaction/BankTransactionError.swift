@@ -10,6 +10,7 @@ import Foundation
 enum BankTransactionError: Error, LocalizedError {
     case insufficientFunds
     case incorrectToAccountNumber
+    case somethingWentWrong
 
     var errorDescription: String? {
         switch self {
@@ -17,6 +18,8 @@ enum BankTransactionError: Error, LocalizedError {
             return "Your account ballance is insuficient to complete this transaction, please add funds"
         case .incorrectToAccountNumber:
             return "The account you are trying to send money to doesn't exist"
+        case .somethingWentWrong:
+            return "Something went wrong"
         }
     }
 }

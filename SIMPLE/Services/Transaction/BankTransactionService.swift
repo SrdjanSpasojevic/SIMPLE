@@ -9,6 +9,6 @@ import Foundation
 
 protocol BankTransactionService: Sendable {
     func send(fromAccountId: String, toAccountId: String, amount: Double) async -> Result<Bool, Error>
-    func checkBalance(for accountId: String) throws -> Result<Double, Error>
-    func accountExists(withId accountId: String) -> Bool
+    func checkBalance(for accountId: String) async -> Result<Double, Error>
+    func accountExists(withId accountId: String) async -> Bool
 }
