@@ -75,4 +75,6 @@ On app startup, if there is a currently logged-in user, the app will prompt for 
 
 ### Demo
 
+https://github.com/user-attachments/assets/6d4093c6-054b-433c-bdd7-fcdcaa2ac837
+
 
