@@ -126,7 +126,7 @@ struct TransferView: View {
             Text("Amount available:")
                 .font(.subheadline)
                 .foregroundStyle(viewModel.isBalanceNegative ? Color.red.opacity(0.9) : AppColors.loginSecondaryText)
-            Text("\(viewModel.formattedBalance) RSD")
+            Text("\(viewModel.formattedBalanceAfter) RSD")
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(viewModel.isBalanceNegative ? Color.red : Color.green)
         }
