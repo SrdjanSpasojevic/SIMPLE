@@ -57,6 +57,11 @@ struct TransferView: View {
         .onChange(of: viewModel.recipientUserId) { _, _ in
             viewModel.validateUserId()
         }
+        .alert("Transfer failed", isPresented: $viewModel.isShowingAlert, actions: {
+            Button("OK", role: .cancel) { }
+        }, message: {
+            Text(viewModel.alertMessage ?? "Something went wrong")
+        })
     }
 
     private var upperSection: some View {

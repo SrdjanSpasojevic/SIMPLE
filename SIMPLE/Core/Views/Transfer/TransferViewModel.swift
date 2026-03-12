@@ -15,6 +15,8 @@ final class TransferViewModel: ObservableObject {
     @Published var userIdValid: Bool?
     @Published var isCheckingUserId: Bool = false
     @Published var sendInProgress: Bool = false
+    @Published var alertMessage: String?
+    @Published var isShowingAlert: Bool = false
 
     private let coordinator: AppCoordinator
     private let bankTransactionService: BankTransactionService
@@ -108,7 +110,14 @@ final class TransferViewModel: ObservableObject {
             await coordinator.refreshCurrentUser()
             coordinator.navigateBack()
         case .failure(let error):
-            break
+            let message: String
+            if let localized = error as? LocalizedError, let description = localized.errorDescription {
+                message = description
+            } else {
+                message = error.localizedDescription
+            }
+            alertMessage = message
+            isShowingAlert = true
         }
     }
 

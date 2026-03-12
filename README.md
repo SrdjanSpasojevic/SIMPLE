@@ -1,5 +1,8 @@
 SIMPLE
 =====
+
+![Works on my machine](https://img.shields.io/badge/works%20on%20my%20machine-YES-brightgreen)
+![Unit tests](https://img.shields.io/badge/unit%20tests-YES-brightgreen)
 ### Requirements
 
 - **Xcode**: 15 or newer  
