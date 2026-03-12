@@ -23,13 +23,14 @@ final class User: Identifiable, Sendable {
          lastName: String,
          username: String,
          password: String,
-         account: Account) {
+         account: Account,
+         isLoggedIn: Bool) {
         self.id = id
         self.firstName = firstName
         self.lastName = lastName
         self.username = username
         self.password = password
         self.account = account
-        self.isLoggedIn = true
+        self.isLoggedIn = isLoggedIn
     }
 }

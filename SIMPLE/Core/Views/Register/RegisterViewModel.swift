@@ -42,7 +42,8 @@ final class RegisterViewModel: ObservableObject {
                 lastName: lastName,
                 username: username,
                 password: password,
-                account: account
+                account: account,
+                isLoggedIn: true
             )
             try await coordinator.authService.register(user: user)
             await coordinator.bootstrap()

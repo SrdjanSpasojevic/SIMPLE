@@ -19,6 +19,7 @@ final class TransferViewModel: ObservableObject {
     private let coordinator: AppCoordinator
     private let bankTransactionService: BankTransactionService
     private let databaseService: DatabaseService
+    private let biometricAuthService: BiometricAuthenticationService
     private var validateTask: Task<Void, Never>?
 
     var currentBalance: Double {
@@ -62,6 +63,7 @@ final class TransferViewModel: ObservableObject {
         self.coordinator = coordinator
         self.bankTransactionService = coordinator.bankTransactionService
         self.databaseService = coordinator.databaseService
+        self.biometricAuthService = coordinator.biometricAuthService
     }
 
     func validateUserId() {
@@ -89,6 +91,11 @@ final class TransferViewModel: ObservableObject {
 
     func send() async {
         guard canSend, let fromUserId = coordinator.currentUser?.id else { return }
+
+        let reason = "Confirm transfer of \(formattedAmount) RSD"
+        let authenticated = await biometricAuthService.authenticate(reason: reason)
+        guard authenticated else { return }
+
         sendInProgress = true
         defer { sendInProgress = false }
         let result = await bankTransactionService.send(

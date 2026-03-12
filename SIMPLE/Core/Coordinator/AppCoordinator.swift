@@ -19,16 +19,25 @@ final class AppCoordinator: Navigationable {
     var authService: AuthenticationService
     var databaseService: DatabaseService
     var bankTransactionService: BankTransactionService
+    var biometricAuthService: BiometricAuthenticationService
+    var mockDataService: MockDataService
 
     init(container: ModelContainer) {
         self.databaseService = Database(container: container)
         self.authService = AuthenticationRepository(database: self.databaseService)
         self.bankTransactionService = BankTransactionRepository(database: self.databaseService)
+        self.biometricAuthService = BiometricAuthentication()
+        self.mockDataService = MockDataRepository(database: self.databaseService)
     }
 
     func bootstrap() async {
+        await mockDataService.seedUsersIfNeeded()
         if let user = await authService.currentUser() {
-            self.currentUser = user
+            if await biometricAuthService.authenticate(reason: "Authenticate to access your SIMPLE account") {
+                self.currentUser = user
+            } else {
+                self.currentUser = nil
+            }
         }
     }
 

@@ -15,14 +15,21 @@ final class AuthenticationRepository: AuthenticationService {
     }
     
     func login(username: String, password: String) async throws -> Bool {
-        let user = try await database.get(where: #Predicate<User> {
+        let users = try await database.get(where: #Predicate<User> {
             $0.username == username && $0.password == password
         })
         
-        if user.isEmpty {
+        if users.isEmpty {
             throw AuthenticationError.invalidCredentials
         }
         
+        guard let user = users.first else {
+            throw AuthenticationError.invalidCredentials
+        }
+
+        user.isLoggedIn = true
+        try await database.save(user)
+
         return true
     }
     
