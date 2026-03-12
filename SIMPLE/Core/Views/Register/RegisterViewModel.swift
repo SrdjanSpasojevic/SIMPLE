@@ -35,7 +35,7 @@ final class RegisterViewModel: ObservableObject {
     func register() async {
         do {
             let userId = UUID().uuidString
-            let account = Account(balance: 100, ownerId: userId, transactions: nil)
+            let account = Account(balance: 100, ownerId: userId)
             let user = User(
                 id: userId,
                 firstName: firstName,

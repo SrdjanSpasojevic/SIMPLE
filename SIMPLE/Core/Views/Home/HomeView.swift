@@ -49,12 +49,24 @@ struct HomeView: View {
                     }
                     print(homeViewText, "User logged out")
                 }
-                .font(.callout.weight(.semibold))
+                .font(.callout.weight(.bold))
+                .foregroundStyle(AppColors.loginPrimaryText)
+            }
+            ToolbarItem(placement: .bottomBar) {
+                Button("Send") {
+                    coordinator.navigate(to: .transfer)
+                }
+                .font(.callout.weight(.bold))
                 .foregroundStyle(AppColors.loginPrimaryText)
             }
         }
         .task {
             viewModel.load()
+        }
+        .onChange(of: coordinator.navigationPath.count) { _, newCount in
+            if newCount == 0 {
+                viewModel.load()
+            }
         }
     }
 

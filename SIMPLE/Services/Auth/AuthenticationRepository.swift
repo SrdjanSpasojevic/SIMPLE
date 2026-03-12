@@ -54,4 +54,15 @@ final class AuthenticationRepository: AuthenticationService {
             return nil
         }
     }
+
+    func userExists(withUserId userId: String) async -> Bool {
+        do {
+            let users = try await database.get(where: #Predicate<User> {
+                $0.id == userId
+            })
+            return !users.isEmpty
+        } catch {
+            return false
+        }
+    }
 }

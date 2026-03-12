@@ -44,13 +44,12 @@ final class BankTransactionRepository: BankTransactionService {
 
             do {
                 try await database.performTransaction { transactionDb in
+                    try transactionDb.save(bankTransaction)
+
                     from.account.balance -= amount
-                    from.account.transactions?.append(bankTransaction)
                     to.account.balance += amount
-                    to.account.transactions?.append(bankTransaction)
                     try transactionDb.save(from)
                     try transactionDb.save(to)
-                    try transactionDb.save(bankTransaction)
                 }
                 return .success(true)
             } catch {

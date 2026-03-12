@@ -12,4 +12,5 @@ protocol AuthenticationService {
     func register(user: User) async throws
     func logout(userId: String) async throws
     func currentUser() async -> User?
+    func userExists(withUserId userId: String) async -> Bool
 }

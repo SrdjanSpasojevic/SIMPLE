@@ -46,15 +46,19 @@ final class HomeViewModel: ObservableObject {
     private func refresh() async {
         guard let user = coordinator.currentUser else { return }
 
+        isLoading = true
+        defer { isLoading = false }
+
+        let userId = user.id
+        let dbTransactions = (try? await database.get(where: #Predicate<BankTransaction> {
+            $0.fromUserId == userId || $0.toUserId == userId
+        })) ?? []
+
         greeting = "Hi, \(user.firstName)"
         currentBalance = Self.currencyFormatter.string(from: NSNumber(value: user.account.balance))
             ?? "\(user.account.balance) RSD"
 
-        isLoading = true
-        defer { isLoading = false }
-
-        let accountTransactions = user.account.transactions ?? []
-        let sortedTransactions = accountTransactions.sorted { $0.timestamp > $1.timestamp }
+        let sortedTransactions = dbTransactions.sorted { $0.timestamp > $1.timestamp }
 
         var rows: [HomeTransactionRow] = []
         rows.reserveCapacity(sortedTransactions.count)

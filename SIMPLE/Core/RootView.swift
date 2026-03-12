@@ -35,7 +35,7 @@ struct RootView: View {
                     case .home:
                         HomeView(coordinator: coordinator)
                     case .transfer:
-                        #warning("TRANSFER VC")
+                        TransferView(coordinator: coordinator)
                     }
                 }
         }

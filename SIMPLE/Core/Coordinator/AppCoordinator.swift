@@ -16,19 +16,26 @@ final class AppCoordinator: Navigationable {
     @Published var navigationPath = NavigationPath()
     @Published var currentUser: User?
 
-    // MARK: Services
     var authService: AuthenticationService
     var databaseService: DatabaseService
+    var bankTransactionService: BankTransactionService
 
     init(container: ModelContainer) {
         self.databaseService = Database(container: container)
         self.authService = AuthenticationRepository(database: self.databaseService)
+        self.bankTransactionService = BankTransactionRepository(database: self.databaseService)
     }
 
     func bootstrap() async {
         if let user = await authService.currentUser() {
             self.currentUser = user
         }
+    }
+
+    func refreshCurrentUser() async {
+        guard let userId = currentUser?.id else { return }
+        let users = try? await databaseService.get(where: #Predicate<User> { $0.id == userId })
+        currentUser = users?.first
     }
 
     func navigate(to route: Route) {
