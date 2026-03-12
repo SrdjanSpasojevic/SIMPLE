@@ -1,8 +1,12 @@
 SIMPLE
+
+<img width="124" height="124" alt="rounded-corners" src="https://github.com/user-attachments/assets/8e9ed194-b8f7-46b3-aa77-cf2214be0d51" />
+
 =====
 
-![Works on my machine](https://img.shields.io/badge/works%20on%20my%20machine-YES-brightgreen)
-![Unit tests](https://img.shields.io/badge/unit%20tests-YES-brightgreen)
+![Works on my machine](https://img.shields.io/badge/Works%20on%20my%20machine-YES-brightgreen)
+![Unit tests](https://img.shields.io/badge/Unit%20tests-PASSING-brightgreen)
+
 ### Requirements
 
 - **Xcode**: 15 or newer  
